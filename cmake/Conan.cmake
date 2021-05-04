@@ -15,6 +15,7 @@ macro(run_conan)
 
   conan_cmake_run(
       CONANFILE conanfile.py
+      PROFILE ../conanprofile.toml
       BASIC_SETUP
       CMAKE_TARGETS # individual targets to link to
       BUILD

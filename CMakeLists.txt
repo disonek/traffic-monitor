@@ -8,10 +8,6 @@ include(cmake/PreventInSourceBuilds.cmake)
 # enable cache system
 include(cmake/Cache.cmake)
 
-# Set up some extra Conan dependencies based on our needs before loading Conan
-set(CONAN_EXTRA_REQUIRES "")
-set(CONAN_EXTRA_OPTIONS "")
-
 include(cmake/Conan.cmake)
 run_conan()
 
