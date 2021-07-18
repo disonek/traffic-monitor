@@ -1,8 +1,11 @@
 #include "WebSocketClient.hpp"
 
+#include <openssl/ssl.h>
+
 #include <chrono>
 
 #include "Log.hpp"
+
 
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;

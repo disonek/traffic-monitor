@@ -17,7 +17,9 @@ target_compile_definitions(network_monitor
 )
 
 find_package(Boost 1.74 REQUIRED COMPONENTS system)
+find_package(OpenSSL REQUIRED)
 target_link_libraries(network_monitor
     PUBLIC
         Boost::Boost
+        OpenSSL::OpenSSL
 )

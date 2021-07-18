@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <boost/asio.hpp>
+#include <filesystem>
 #include <iostream>
 #include <string>
 
@@ -58,4 +59,9 @@ TEST(NetworkMonitorTest, basicTest)
     EXPECT_TRUE(messageReceived);
     EXPECT_TRUE(disconnected);
     EXPECT_EQ(echo, message);
+}
+
+TEST(NetworkMonitorTest, cert)
+{
+    EXPECT_TRUE(std::filesystem::exists(TESTS_CACERT_PEM));
 }

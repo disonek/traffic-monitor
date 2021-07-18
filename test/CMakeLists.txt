@@ -19,6 +19,11 @@ target_link_libraries(
           
 target_compile_features(network_monitor_test PRIVATE cxx_std_17)
 
+target_compile_definitions(network_monitor_test
+    PRIVATE
+        TESTS_CACERT_PEM="${CMAKE_CURRENT_SOURCE_DIR}/cacert.pem"
+)
+
 add_test(NAME network_monitor_test COMMAND network_monitor_test)
 
 add_custom_command(
