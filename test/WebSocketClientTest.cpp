@@ -1,12 +1,15 @@
+#include <gtest/gtest.h>
+
 #include <boost/asio.hpp>
 #include <iostream>
 #include <string>
 
 #include "WebSocketClient.hpp"
 
+using namespace testing;
 using NetworkMonitor::WebSocketClient;
 
-int main()
+TEST(NetworkMonitorTest, basicTest)
 {
     // Connection targets
     const std::string url{"echo.websocket.org"};
@@ -24,8 +27,8 @@ int main()
     bool connected{false};
     bool messageSent{false};
     bool messageReceived{false};
-    bool messageMatches{false};
     bool disconnected{false};
+    std::string echo{};
 
     // Our own callbacks
     auto onSend{[&messageSent](auto ec) { messageSent = !ec; }};
@@ -40,9 +43,9 @@ int main()
 
     auto onClose{[&disconnected](auto ec) { disconnected = !ec; }};
 
-    auto onReceive{[&client, &onClose, &messageReceived, &messageMatches, &message](auto ec, auto received) {
+    auto onReceive{[&client, &onClose, &messageReceived, &echo, &message](auto ec, auto received) {
         messageReceived = !ec;
-        messageMatches = message == received;
+        echo = message;
         client.Close(onClose);
     }};
 
@@ -50,16 +53,9 @@ int main()
     client.Connect(onConnect, onReceive);
     ioc.run();
 
-    // When we get here, the io_context::run function has run out of work to do.
-    bool ok{connected && messageSent && messageReceived && messageMatches && disconnected};
-    if(ok)
-    {
-        std::cout << "OK" << std::endl;
-        return 0;
-    }
-    else
-    {
-        std::cerr << "Test failed" << std::endl;
-        return 1;
-    }
+    EXPECT_TRUE(connected);
+    EXPECT_TRUE(messageSent);
+    EXPECT_TRUE(messageReceived);
+    EXPECT_TRUE(disconnected);
+    EXPECT_EQ(echo, message);
 }
