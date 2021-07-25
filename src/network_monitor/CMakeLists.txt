@@ -2,7 +2,7 @@ add_library(network_monitor)
 
 target_include_directories(network_monitor PUBLIC .)
 
-target_sources(network_monitor PRIVATE 
+target_sources(network_monitor PUBLIC
     WebSocketClient.hpp
     WebSocketClient.cpp)
     
@@ -15,6 +15,8 @@ target_compile_definitions(network_monitor
     PRIVATE
         $<$<PLATFORM_ID:Windows>:_WIN32_WINNT=${WINDOWS_VERSION}>
 )
+
+target_compile_options(network_monitor PUBLIC $<$<PLATFORM_ID:Windows>:/bigobj>)
 
 find_package(Boost 1.74 REQUIRED COMPONENTS system)
 find_package(OpenSSL REQUIRED)

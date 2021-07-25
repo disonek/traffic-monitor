@@ -14,14 +14,17 @@ TEST(NetworkMonitorTest, basicTest)
 {
     // Connection targets
     const std::string url{"echo.websocket.org"};
-    const std::string port{"80"};
+    const std::string port{"443"};
     const std::string message{"Hello WebSocket"};
+
+    boost::asio::ssl::context ctx{boost::asio::ssl::context::tlsv12_client};
+    ctx.load_verify_file(TESTS_CACERT_PEM);
 
     // Always start with an I/O context object.
     boost::asio::io_context ioc{};
 
     // The class under test
-    WebSocketClient client{url, port, ioc};
+    WebSocketClient client{url, port, ioc, ctx};
 
     // We use these flags to check that the connection, send, receive functions
     // work as expected.

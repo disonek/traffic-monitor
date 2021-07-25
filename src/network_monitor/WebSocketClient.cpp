@@ -6,17 +6,19 @@
 
 #include "Log.hpp"
 
-
 using tcp = boost::asio::ip::tcp;
 namespace websocket = boost::beast::websocket;
 
 namespace NetworkMonitor {
 
-WebSocketClient::WebSocketClient(const std::string& url, const std::string& port, boost::asio::io_context& ioc)
+WebSocketClient::WebSocketClient(const std::string& url,
+                                 const std::string& port,
+                                 boost::asio::io_context& ioc,
+                                 boost::asio::ssl::context& ctx)
     : url_{url}
     , port_{port}
     , resolver_{boost::asio::make_strand(ioc)}
-    , ws_{boost::asio::make_strand(ioc)}
+    , ws_{boost::asio::make_strand(ioc), ctx}
 {
 }
 
@@ -67,9 +69,9 @@ void WebSocketClient::OnResolve(const boost::system::error_code& ec,
         return;
     }
 
-    ws_.next_layer().expires_after(std::chrono::seconds(5));
+    boost::beast::get_lowest_layer(ws_).expires_after(std::chrono::seconds(5));
 
-    ws_.next_layer().async_connect(*resolverIt, [this](auto ec) { OnConnect(ec); });
+    boost::beast::get_lowest_layer(ws_).async_connect(*resolverIt, [this](auto ec) { OnConnect(ec); });
 }
 
 void WebSocketClient::OnConnect(const boost::system::error_code& ec)
@@ -84,10 +86,14 @@ void WebSocketClient::OnConnect(const boost::system::error_code& ec)
         return;
     }
 
-    ws_.next_layer().expires_never();
+    boost::beast::get_lowest_layer(ws_).expires_never();
     ws_.set_option(websocket::stream_base::timeout::suggested(boost::beast::role_type::client));
 
-    ws_.async_handshake(url_, "/", [this](auto ec) { OnHandshake(ec); });
+    // Some clients require that we set the host name before the TLS handshake
+    // or the connection will fail. We use an OpenSSL function for that.
+    SSL_set_tlsext_host_name(ws_.next_layer().native_handle(), url_.c_str());
+
+    ws_.next_layer().async_handshake(boost::asio::ssl::stream_base::client, [this](auto ec) { OnTlsHandshake(ec); });
 }
 
 void WebSocketClient::OnHandshake(const boost::system::error_code& ec)
@@ -109,6 +115,21 @@ void WebSocketClient::OnHandshake(const boost::system::error_code& ec)
     {
         onConnect_(ec);
     }
+}
+
+void WebSocketClient::OnTlsHandshake(const boost::system::error_code& ec)
+{
+    if(ec)
+    {
+        Log("OnTlsHandshake", ec);
+        if(onConnect_)
+        {
+            onConnect_(ec);
+        }
+        return;
+    }
+    // Attempt a WebSocket handshake.
+    ws_.async_handshake(url_, "/", [this](auto ec) { OnHandshake(ec); });
 }
 
 void WebSocketClient::ListenToIncomingMessage(const boost::system::error_code& ec)

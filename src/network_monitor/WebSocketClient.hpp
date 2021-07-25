@@ -1,7 +1,9 @@
 #pragma once
 
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <boost/beast.hpp>
+#include <boost/beast/ssl.hpp>
 #include <boost/system/error_code.hpp>
 #include <functional>
 #include <string>
@@ -11,7 +13,10 @@ namespace NetworkMonitor {
 class WebSocketClient
 {
 public:
-    WebSocketClient(const std::string& url, const std::string& port, boost::asio::io_context& ioc);
+    WebSocketClient(const std::string& url,
+                    const std::string& port,
+                    boost::asio::io_context& ioc,
+                    boost::asio::ssl::context& ctx);
 
     void Connect(std::function<void(boost::system::error_code)> onConnect = nullptr,
                  std::function<void(boost::system::error_code, std::string&&)> onMessage = nullptr,
@@ -24,6 +29,7 @@ private:
     void OnResolve(const boost::system::error_code& ec, boost::asio::ip::tcp::resolver::iterator resolverIt);
     void OnConnect(const boost::system::error_code& ec);
     void OnHandshake(const boost::system::error_code& ec);
+    void OnTlsHandshake(const boost::system::error_code& ec);
     void ListenToIncomingMessage(const boost::system::error_code& ec);
     void OnRead(const boost::system::error_code& ec, size_t nBytes);
 
@@ -31,7 +37,7 @@ private:
     std::string port_{};
 
     boost::asio::ip::tcp::resolver resolver_;
-    boost::beast::websocket::stream<boost::beast::tcp_stream> ws_;
+    boost::beast::websocket::stream<boost::beast::ssl_stream<boost::beast::tcp_stream> > ws_;
 
     boost::beast::flat_buffer rBuffer_{};
     bool closed_{true};
