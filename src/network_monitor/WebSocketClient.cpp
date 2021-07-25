@@ -12,10 +12,12 @@ namespace websocket = boost::beast::websocket;
 namespace NetworkMonitor {
 
 WebSocketClient::WebSocketClient(const std::string& url,
+                                 const std::string& endpoint,
                                  const std::string& port,
                                  boost::asio::io_context& ioc,
                                  boost::asio::ssl::context& ctx)
     : url_{url}
+    , endpoint_{endpoint}
     , port_{port}
     , resolver_{boost::asio::make_strand(ioc)}
     , ws_{boost::asio::make_strand(ioc), ctx}
@@ -129,7 +131,7 @@ void WebSocketClient::OnTlsHandshake(const boost::system::error_code& ec)
         return;
     }
     // Attempt a WebSocket handshake.
-    ws_.async_handshake(url_, "/", [this](auto ec) { OnHandshake(ec); });
+    ws_.async_handshake(url_, endpoint_, [this](auto ec) { OnHandshake(ec); });
 }
 
 void WebSocketClient::ListenToIncomingMessage(const boost::system::error_code& ec)
