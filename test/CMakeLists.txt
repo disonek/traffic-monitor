@@ -2,6 +2,7 @@ add_executable(network_monitor_test)
 target_sources(network_monitor_test 
   PRIVATE
       WebSocketClientTest.cpp
+      FileDownloaderTest.cpp
 )
 
 
@@ -26,7 +27,7 @@ target_compile_definitions(network_monitor_test
 
 add_test(NAME network_monitor_test COMMAND network_monitor_test)
 
-add_custom_command(
-  TARGET network_monitor_test
-  POST_BUILD
-  COMMAND ctest -C Debug -T test --output-on-failure)
+# add_custom_command(
+#   TARGET network_monitor_test
+#   POST_BUILD
+#   COMMAND ctest -C Debug -T test --output-on-failure)

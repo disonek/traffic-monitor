@@ -29,7 +29,7 @@ if(WIN32)
     get_win_ver(WINDOWS_VERSION)
 endif()
 
-add_subdirectory(src/network_monitor)
+add_subdirectory(network_monitor)
 
 enable_testing()
 add_subdirectory(test)
