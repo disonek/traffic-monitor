@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 
-TEST(FileDownloader, basic)
+TEST(FileDownloaderTest, basic)
 {
     const std::string fileUrl{"https://ltnm.learncppthroughprojects.com/network-layout.json"};
     const auto destination{std::filesystem::temp_directory_path() / "network-layout.json"};
@@ -38,7 +38,7 @@ TEST(FileDownloader, basic)
     std::filesystem::remove(destination);
 }
 
-TEST(FileDownloader, downloadAndParseFile)
+TEST(FileDownloaderTest, downloadAndParseFile)
 {
     const std::string fileUrl{"https://ltnm.learncppthroughprojects.com/network-layout.json"};
     const auto destination{TESTS_NETWORK_LAYOUT_JSON};

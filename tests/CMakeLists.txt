@@ -1,8 +1,8 @@
 add_executable(network_monitor_test
         WebSocketClientTest.cpp
         FileDownloaderTest.cpp
+        TransportNetworkTest.cpp
 )
-
 
 find_package(GTest REQUIRED)
 find_package(Threads REQUIRED)

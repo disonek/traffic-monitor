@@ -1,7 +1,7 @@
-
 add_library(network_monitor STATIC
     src/WebSocketClient.cpp
     src/FileDownloader.cpp
+    src/TransportNetwork.cpp
 )
     
 target_compile_features(network_monitor
