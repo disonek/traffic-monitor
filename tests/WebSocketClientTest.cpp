@@ -13,8 +13,8 @@ using NetworkMonitor::WebSocketClient;
 TEST(NetworkMonitorTest, DISABLED_basicTest)
 {
     // Connection targets
-    const std::string url{"echo.websocket.org"};
-    const std::string endpoint{"/"};
+    const std::string url{"ltnm.learncppthroughprojects.com"};
+    const std::string endpoint{"/echo"};
     const std::string port{"443"};
     const std::string message{"Hello WebSocket"};
 

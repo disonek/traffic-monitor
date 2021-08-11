@@ -16,40 +16,34 @@ using NetworkMonitor::TransportNetwork;
 
 bool Station::operator==(const Station& other) const
 {
-    return false;
+    return id == other.id;
 }
 
 // Route — Public methods
 
 bool Route::operator==(const Route& other) const
 {
-    return false;
+    return id == other.id;
 }
 
 // Line — Public methods
 
 bool Line::operator==(const Line& other) const
 {
-    return false;
+    return id == other.id;
 }
 
 // TransportNetwork — Public methods
 
-TransportNetwork::TransportNetwork() = default;
-
-TransportNetwork::~TransportNetwork() = default;
-
-TransportNetwork::TransportNetwork(const TransportNetwork& copied) = default;
-
-TransportNetwork::TransportNetwork(TransportNetwork&& moved) = default;
-
-TransportNetwork& TransportNetwork::operator=(const TransportNetwork& copied) = default;
-
-TransportNetwork& TransportNetwork::operator=(TransportNetwork&& moved) = default;
-
 bool TransportNetwork::AddStation(const Station& station)
 {
-    return false;
+    if(GetStation(station.id) != nullptr)
+    {
+        return false;
+    }
+
+    stations_.emplace(station.id, std::make_shared<GraphNode>(GraphNode{station.id, station.name, 0, {}}));
+    return true;
 }
 
 bool TransportNetwork::AddLine(const Line& line)
@@ -100,12 +94,23 @@ std::vector<std::shared_ptr<TransportNetwork::GraphEdge>>::const_iterator Transp
 
 std::shared_ptr<TransportNetwork::GraphNode> TransportNetwork::GetStation(const Id& stationId) const
 {
-    return nullptr;
+    auto stationIt = stations_.find(stationId);
+    if(stationIt == end(stations_))
+    {
+        return nullptr;
+    }
+
+    return stationIt->second;
 }
 
 std::shared_ptr<TransportNetwork::LineInternal> TransportNetwork::GetLine(const Id& lineId) const
 {
-    return nullptr;
+    auto lineIt = lines_.find(lineId);
+    if(lineIt == end(lines_))
+    {
+        return nullptr;
+    }
+    return lineIt->second;
 }
 
 std::shared_ptr<TransportNetwork::RouteInternal> TransportNetwork::GetRoute(const Id& lineId, const Id& routeId) const

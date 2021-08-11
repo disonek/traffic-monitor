@@ -103,13 +103,6 @@ struct PassengerEvent
 class TransportNetwork
 {
 public:
-    TransportNetwork();
-    ~TransportNetwork();
-    TransportNetwork(const TransportNetwork& copied);
-    TransportNetwork(TransportNetwork&& moved);
-    TransportNetwork& operator=(const TransportNetwork& copied);
-    TransportNetwork& operator=(TransportNetwork&& moved);
-
     /*! \brief Add a station to the network.
      *
      *  \returns false if there was an error while adding the station to the

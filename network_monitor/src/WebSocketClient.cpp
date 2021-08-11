@@ -71,7 +71,7 @@ void WebSocketClient::OnResolve(const boost::system::error_code& ec,
         return;
     }
 
-    boost::beast::get_lowest_layer(ws_).expires_after(std::chrono::seconds(3));
+    boost::beast::get_lowest_layer(ws_).expires_after(std::chrono::seconds(5));
 
     boost::beast::get_lowest_layer(ws_).async_connect(*resolverIt, [this](auto ec) { OnConnect(ec); });
 }
