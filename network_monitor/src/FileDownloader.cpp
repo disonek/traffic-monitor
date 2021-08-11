@@ -2,6 +2,9 @@
 
 #include <curl/curl.h>
 
+#include <fstream>
+
+
 bool NetworkMonitor::DownloadFile(const std::string& fileUrl,
                                   const std::filesystem::path& destination,
                                   const std::filesystem::path& caCertFile)
@@ -38,4 +41,23 @@ bool NetworkMonitor::DownloadFile(const std::string& fileUrl,
     fclose(fp);
 
     return res == CURLE_OK;
+}
+
+nlohmann::json NetworkMonitor::ParseJsonFile(const std::filesystem::path& source)
+{
+    nlohmann::json parsed{};
+    if(!std::filesystem::exists(source))
+    {
+        return parsed;
+    }
+    try
+    {
+        std::ifstream file{source};
+        file >> parsed;
+    }
+    catch(...)
+    {
+        // Will return an empty object.
+    }
+    return parsed;
 }

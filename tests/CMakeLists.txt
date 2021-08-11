@@ -20,6 +20,7 @@ target_compile_features(network_monitor_test PRIVATE cxx_std_17)
 target_compile_definitions(network_monitor_test
     PRIVATE
         TESTS_CACERT_PEM="${CMAKE_CURRENT_SOURCE_DIR}/cacert.pem"
+        TESTS_NETWORK_LAYOUT_JSON="${CMAKE_CURRENT_SOURCE_DIR}/network-layout.json"
         # BOOST_ASIO_ENABLE_HANDLER_TRACKING=1
 )
 

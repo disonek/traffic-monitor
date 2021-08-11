@@ -10,7 +10,8 @@ target_compile_features(network_monitor
 )
 
 target_compile_definitions(network_monitor
-    PRIVATE
+    # PRIVATE
+    PUBLIC
         $<$<PLATFORM_ID:Windows>:_WIN32_WINNT=${WINDOWS_VERSION}>
 )
 
@@ -24,6 +25,7 @@ target_link_libraries(network_monitor
     PUBLIC
         OpenSSL::OpenSSL
         Boost::Boost
+        nlohmann_json::nlohmann_json
     PRIVATE
         CURL::CURL
 )

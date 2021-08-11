@@ -37,3 +37,25 @@ TEST(FileDownloader, basic)
     // Clean up.
     std::filesystem::remove(destination);
 }
+
+TEST(FileDownloader, downloadAndParseFile)
+{
+    const std::string fileUrl{"https://ltnm.learncppthroughprojects.com/network-layout.json"};
+    const auto destination{TESTS_NETWORK_LAYOUT_JSON};
+
+    bool downloaded{NetworkMonitor::DownloadFile(fileUrl, destination, TESTS_CACERT_PEM)};
+    EXPECT_TRUE(downloaded);
+    EXPECT_TRUE(std::filesystem::exists(destination));
+
+    auto parsed = NetworkMonitor::ParseJsonFile(destination);
+
+    EXPECT_TRUE(parsed.is_object());
+    EXPECT_TRUE(parsed.contains("lines"));
+    EXPECT_TRUE(parsed.at("lines").size() > 0);
+    EXPECT_TRUE(parsed.contains("stations"));
+    EXPECT_TRUE(parsed.at("stations").size() > 0);
+    EXPECT_TRUE(parsed.contains("travel_times"));
+    EXPECT_TRUE(parsed.at("travel_times").size() > 0);
+
+    std::filesystem::remove(destination);
+}

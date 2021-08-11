@@ -29,9 +29,11 @@ if(WIN32)
     get_win_ver(WINDOWS_VERSION)
 endif()
 
+add_subdirectory(ext/nlohmann_json)
 add_subdirectory(network_monitor)
 
 enable_testing()
-add_subdirectory(test)
+add_subdirectory(tests)
+
 
 
