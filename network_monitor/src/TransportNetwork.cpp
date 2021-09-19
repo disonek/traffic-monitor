@@ -44,14 +44,17 @@ bool TransportNetwork::AddLine(const Line& line)
     {
         return false;
     }
-    // struct LineInternal
-    // {
-    //     Id id{};
-    //     std::string name{};
-    //     std::unordered_map<Id, std::shared_ptr<RouteInternal>> routes{};
-    // };
 
-    // lines_.emplace(LineInternal{line.id, line.name, line.routes});
+    auto lineInternal{std::make_shared<LineInternal>(LineInternal{line.id, line.name, {}})};
+    for(const auto& route : line.routes)
+    {
+        bool ok{AddRouteToLine(route, lineInternal)};
+        if(!ok)
+        {
+            return false;
+        }
+    }
+    lines_.emplace(line.id, std::move(lineInternal));
 
     return true;
 }
@@ -125,5 +128,34 @@ std::shared_ptr<TransportNetwork::RouteInternal> TransportNetwork::GetRoute(cons
 
 bool TransportNetwork::AddRouteToLine(const Route& route, const std::shared_ptr<LineInternal>& lineInternal)
 {
-    return false;
+    if(lineInternal->routes.find(route.id) != end(lineInternal->routes))
+    {
+        return false;
+    }
+
+    std::vector<std::shared_ptr<GraphNode>> stops{};
+    stops.reserve(route.stops.size());
+
+    for(const auto& stopsId : route.stops)
+    {
+        const auto station{GetStation(stopsId)};
+        if(station == nullptr)
+        {
+            return false;
+        }
+        stops.push_back(station);
+    }
+
+    auto routeInternal{std::make_shared<RouteInternal>(RouteInternal{route.id, lineInternal, std::move(stops)})};
+
+    for(size_t idx{0}; idx < routeInternal->stops.size() - 1; ++idx)
+    {
+        const auto& thisStop{routeInternal->stops[idx]};
+        const auto& nextStop{routeInternal->stops[idx + 1]};
+
+        thisStop->edges.emplace_back(std::make_shared<GraphEdge>(GraphEdge{routeInternal, nextStop, 0}));
+    }
+
+    lineInternal->routes[route.id] = std::move(routeInternal);
+    return true;
 }

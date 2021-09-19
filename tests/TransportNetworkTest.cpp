@@ -103,7 +103,7 @@ TEST(TransportNetworkTest, AddLine_basic)
     EXPECT_TRUE(ok);
 }
 
-TEST(TransportNetworkTest, DISABLED_AddLine_shared_stations)
+TEST(TransportNetworkTest, AddLine_shared_stations)
 {
     TransportNetwork nw{};
     bool ok{false};
@@ -158,7 +158,7 @@ TEST(TransportNetworkTest, DISABLED_AddLine_shared_stations)
     EXPECT_TRUE(ok);
 }
 
-TEST(TransportNetworkTest, DISABLED_AddLine_missing_stations)
+TEST(TransportNetworkTest, AddLine_missing_stations)
 {
     TransportNetwork nw{};
     bool ok{false};
@@ -210,7 +210,7 @@ TEST(TransportNetworkTest, DISABLED_AddLine_missing_stations)
     EXPECT_TRUE(ok);
 }
 
-TEST(TransportNetworkTest, DISABLED_AddLine_duplicate)
+TEST(TransportNetworkTest, AddLine_duplicate)
 {
     TransportNetwork nw{};
     bool ok{false};
