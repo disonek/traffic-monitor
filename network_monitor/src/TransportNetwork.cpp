@@ -12,28 +12,20 @@ using NetworkMonitor::Route;
 using NetworkMonitor::Station;
 using NetworkMonitor::TransportNetwork;
 
-// Station — Public methods
-
 bool Station::operator==(const Station& other) const
 {
     return id == other.id;
 }
-
-// Route — Public methods
 
 bool Route::operator==(const Route& other) const
 {
     return id == other.id;
 }
 
-// Line — Public methods
-
 bool Line::operator==(const Line& other) const
 {
     return id == other.id;
 }
-
-// TransportNetwork — Public methods
 
 bool TransportNetwork::AddStation(const Station& station)
 {
@@ -48,7 +40,20 @@ bool TransportNetwork::AddStation(const Station& station)
 
 bool TransportNetwork::AddLine(const Line& line)
 {
-    return false;
+    if(GetLine(line.id) != nullptr)
+    {
+        return false;
+    }
+    // struct LineInternal
+    // {
+    //     Id id{};
+    //     std::string name{};
+    //     std::unordered_map<Id, std::shared_ptr<RouteInternal>> routes{};
+    // };
+
+    // lines_.emplace(LineInternal{line.id, line.name, line.routes});
+
+    return true;
 }
 
 bool TransportNetwork::RecordPassengerEvent(const PassengerEvent& event)
